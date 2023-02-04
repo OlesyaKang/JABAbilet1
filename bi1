@@ -1,0 +1,41 @@
+import System.IO;
+import Map;
+public interface Pastery {
+    public String get(String pasteryType);
+}
+
+public class HarderToBakePastery implements Pastery {
+    @Override
+    public String get(String pasteryType) {
+        System.out.println("some process of baking");
+        return String.format("type of pastery \"%s\"", pasteryType);
+    }
+}
+
+public class PasteryProxy implements Pastery {
+    
+    private Pastery bigHleb = new HarderToBakePastery();
+    private Map loadedHleb = new HashMap();
+    
+    @Override
+    public String get(String pasteryType) {
+        if (loadedHleb.get(pasteryType) != null) {
+            return loadedHleb.get(pasteryType);
+        } else {
+            String pastery = bigHleb.get(pasteryType);
+            loadedHleb.put(pasteryType, pastery);
+            return pastery;
+        }
+    }
+}
+
+public class Main {
+    Pastery hleb1 = new PasteryProxy();
+    Pastery hleb2 = new HarderToBakePastery();
+    System.out.println(hleb1.get("Cookie"));
+    System.out.println(hleb1.get("Cookie2"));
+    System.out.println(hleb1.get("Cookie3"));
+    
+    System.out.println(hleb2.get("Cake1"));
+    System.out.println(hleb2.get("Cake2"));
+}
